@@ -1,0 +1,27 @@
+# Segredos e Arquivos de Ambiente
+# NUNCA envie arquivos .env para o GitHub!
+.env
+.env.local
+.env.*.local
+
+# Dependências
+# Esta pasta é gigante e recriada localmente com 'npm install'
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# Pasta de Build (se você usar TypeScript ou um similar)
+dist/
+build/
+
+# Arquivos de Sistema Operacional (macOS, Windows)
+.DS_Store
+Thumbs.db
+
+# Arquivos de IDE (Opcional, mas recomendado)
+.idea/
+.vscode/

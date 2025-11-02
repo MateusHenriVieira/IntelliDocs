@@ -1,0 +1,66 @@
+# docker-compose.yaml
+# Define a versão da sintaxe do Docker Compose a ser usada.
+# Define todos os serviços (containers) que compõem a aplicação.
+services:
+  # O serviço principal da sua API em FastAPI.
+  backend:
+    # 'build: .' instrui o Compose a construir a imagem a partir do Dockerfile na pasta atual.
+    build: .
+    container_name: intellidocs_backend
+    ports:
+      # Mapeia a porta 8000 do container para a porta 8000 da sua máquina local.
+      - "8000:8000"
+    volumes:
+      # Monta a pasta 'src' local dentro do container, permitindo live-reload do código.
+      - ./src:/app/src
+    env_file:
+      # Carrega as variáveis de ambiente a partir do arquivo .env.
+      - .env
+    depends_on:
+      # Garante que o banco de dados e o Redis iniciem ANTES da API.
+      - postgres_db
+      - redis_cache
+
+  # O serviço do banco de dados PostgreSQL com a extensão pgvector.
+  postgres_db:
+    # Usa uma imagem pública que já vem com o PostgreSQL e a extensão pgvector instalada.
+    image: ankane/pgvector:v0.5.0
+    container_name: intellidocs_postgres
+    ports:
+      # Expõe a porta do PostgreSQL para que você possa se conectar com ferramentas como o DBeaver.
+      - "5432:5432"
+    volumes:
+      # Cria um volume nomeado 'postgres_data' para persistir os dados do banco.
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  # O serviço do Redis, usado como broker para o Celery.
+  redis_cache:
+    # Usa a imagem oficial e leve do Redis.
+    image: redis:7-alpine
+    container_name: intellidocs_redis
+    ports:
+      # Expõe a porta do Redis.
+      - "6379:6379"
+    restart: unless-stopped
+
+  # O serviço do "worker" Celery, que processará as tarefas em background.
+  worker:
+    # Usa o mesmo Dockerfile da API, pois compartilha o mesmo código base.
+    build: .
+    container_name: intellidocs_worker
+    # Comando que inicia o processo do Celery worker.
+    command: celery -A src.tasks.celery_app worker --loglevel=info
+    volumes:
+      - ./src:/app/src
+    env_file:
+      - .env
+    depends_on:
+      - redis_cache
+      - postgres_db
+
+# Define os volumes nomeados para persistência de dados.
+volumes:
+  postgres_data:

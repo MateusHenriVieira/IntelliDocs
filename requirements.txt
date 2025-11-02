@@ -1,0 +1,31 @@
+# requirements.txt
+
+# --- Core Framework ---
+fastapi                       # O framework web para construir a API
+uvicorn[standard]             # O servidor ASGI para rodar a aplicação FastAPI
+
+# --- Database ---
+sqlalchemy                    # ORM para interagir com o banco de dados SQL
+psycopg2-binary               # Driver para conectar o SQLAlchemy ao PostgreSQL
+pgvector                      # Biblioteca de integração do SQLAlchemy com a extensão pgvector
+alembic                       # Para realizar as migrações do esquema do banco de dados
+
+# --- Asynchronous Tasks ---
+celery                        # Sistema de fila para tarefas em background (OCR, embeddings)
+redis                         # Cliente Python para o Redis, que será o broker do Celery
+
+# --- AI & Machine Learning ---
+sentence-transformers         # Para gerar os embeddings de texto
+torch                         # Framework de machine learning, dependência principal do sentence-transformers
+
+# --- Authentication & Security ---
+firebase-admin                # SDK do Firebase para validar os tokens JWT no backend
+python-jose[cryptography]     # Biblioteca para operações criptográficas e JWT (boa prática ter)
+
+# --- Utilities ---
+pydantic-settings             # Para gerenciar configurações e variáveis de ambiente de forma robusta
+email-validator
+python-multipart
+PyMuPDF
+groq
+litellm

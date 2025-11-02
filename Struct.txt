@@ -1,0 +1,67 @@
+intellidocs-backend/
+├── alembic/                      # Configuração e scripts de migração do Alembic
+│   ├── versions/                 # Arquivos de migração gerados
+│   ├── env.py                    # Script de configuração do ambiente Alembic
+│   └── script.py.mako            # Template para novos scripts de migração
+├── src/                          # Todo o código fonte da aplicação
+│   ├── api/                      # Camada de API (endpoints)
+│   │   ├── deps.py               # Dependências da API (ex: get_db, get_current_user)
+│   │   └── v1/                   # Versão 1 da API
+│   │       ├── __init__.py
+│   │       └── endpoints/        # Módulos com os endpoints
+│   │           ├── admin.py
+│   │           ├── analytics.py
+│   │           ├── auth.py
+│   │           ├── documents.py
+│   │           ├── organizations.py
+│   │           ├── search.py
+│   │           ├── subscriptions.py
+│   │           ├── users.py
+│   │           └── workflows.py
+│   │
+│   ├── core/                     # Configurações e lógica centrais do projeto
+│   │   ├── config.py             # Gerenciamento de configurações (variáveis de ambiente)
+│   │   └── security.py           # Funções de segurança (hash, validação de token)
+│   │
+│   ├── db/                       # Lógica de acesso ao banco de dados
+│   │   ├── base.py               # Base declarativa do SQLAlchemy e metadados
+│   │   └── session.py            # Engine e gerenciamento de sessões do DB
+│   │
+│   ├── models/                   # Modelos de dados do SQLAlchemy (tabelas)
+│   │   ├── __init__.py
+│   │   ├── audit_log.py
+│   │   ├── document.py
+│   │   ├── organization.py
+│   │   ├── shared_link.py
+│   │   ├── subscription.py
+│   │   ├── usage_metric.py
+│   │   ├── user.py
+│   │   └── workflow.py
+│   │
+│   ├── schemas/                  # Esquemas Pydantic (validação de dados)
+│   │   ├── __init__.py
+│   │   ├── document.py
+│   │   ├── organization.py
+│   │   ├── token.py
+│   │   ├── user.py
+│   │   └── workflow.py
+│   │
+│   ├── services/                 # Lógica de negócio (onde a "mágica" acontece)
+│   │   ├── __init__.py
+│   │   ├── document_service.py   # Ex: Lógica para criar, processar, deletar docs
+│   │   ├── search_service.py     # Lógica da busca semântica
+│   │   └── user_service.py       # Lógica de criação e gestão de usuários
+│   │
+│   ├── tasks/                    # Tarefas assíncronas do Celery
+│   │   ├── celery_app.py         # Configuração da instância do Celery
+│   │   └── document_tasks.py     # Tarefa de OCR e processamento de embeddings
+│   │
+│   └── main.py                   # Ponto de entrada da aplicação FastAPI
+│
+├── .env                          # Variáveis de ambiente (NÃO versionar no Git)
+├── .gitignore
+├── alembic.ini                   # Configuração principal do Alembic
+├── docker-compose.yml            # Orquestrador dos serviços (Python, Postgres, Redis)
+├── Dockerfile                    # Receita para construir a imagem do backend
+├── pyproject.toml                # Definição do projeto e dependências (ou requirements.txt)
+└── README.md                     # Documentação do backend

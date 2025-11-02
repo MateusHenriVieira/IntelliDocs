@@ -1,0 +1,108 @@
+{
+  "projectName": "Sistema de Controle de Memorando e Notas para Empenho",
+  "projectDescription": "Desenvolver uma aplicação web para gerenciar o fluxo de documentos financeiros internos (memorandos e notas fiscais), desde o envio inicial até o arquivamento final. O sistema deve fornecer um rastreamento detalhado (log de atividades) e controle de acesso baseado em hierarquia de usuários.",
+  "technologies": {
+    "frontend": {
+      "style": "Moderno e Minimalista",
+      "framework": "React.js ou Next.js (sugerido)",
+      "uiLibrary": "Shadcn/UI, Material-UI, ou similar para componentes modernos"
+    },
+    "backend": {
+      "database": "Firebase Firestore",
+      "authentication": "Firebase Authentication",
+      "hosting": "Firebase Hosting"
+    }
+  },
+  "features": [
+    {
+      "featureName": "Formulário de Envio e Log Inicial",
+      "description": "Criação de um formulário para a submissão inicial de documentos financeiros no sistema.",
+      "requirements": [
+        "Campos obrigatórios: Secretaria/Fonte, Número do Documento (Nota Fiscal/Memorando), Data do Documento, Valor, Breve Descrição, Tipo de Nota.",
+        "O sistema deve capturar automaticamente o usuário que está alimentando o formulário.",
+        "No ato do envio, o usuário deve selecionar para qual departamento o documento será enviado (ex: Contabilidade).",
+        "Deve ser gerado um log de criação com: Data e Hora do envio, Quem enviou, Para onde enviou, De onde enviou (departamento de origem)."
+      ]
+    },
+    {
+      "featureName": "Dashboard e Acompanhamento de Rota (Workflow)",
+      "description": "Interface para visualizar e interagir com os documentos, rastreando cada etapa do processo.",
+      "requirements": [
+        "Cada departamento (Contabilidade, Pagamento, Arquivo) deve ter uma dashboard de 'Documentos Recebidos'.",
+        "Um usuário pode 'aceitar' um documento para trabalhar nele. O sistema deve impedir que outro usuário do mesmo departamento trabalhe no mesmo documento simultaneamente (implementar um sistema de 'lock' ou atribuição).",
+        "Após concluir sua etapa (ex: empenho), o usuário deve poder encaminhar o documento para o próximo departamento (ex: Pagamento).",
+        "O documento deve desaparecer da lista de 'pendentes' do departamento atual e aparecer na lista do próximo.",
+        "Todas as ações (recebimento, aceite, envio, pagamento, arquivamento) devem ser registradas em um log de atividades detalhado, associado ao documento, com 'Usuário', 'Departamento', 'Ação', 'Data' e 'Hora'.",
+        "Documentos processados devem ficar visíveis em um histórico para os usuários que interagiram com eles.",
+        "Após o arquivamento, o status do documento é 'Finalizado' e ele deve ser consultável com todo o seu histórico."
+      ]
+    },
+    {
+      "featureName": "Geração de Relatórios",
+      "description": "Funcionalidade para extrair dados do sistema e entender o status dos documentos.",
+      "requirements": [
+        "Permitir a geração de relatórios filtrando por Secretaria/Fonte.",
+        "Os relatórios devem exibir uma lista de todos os documentos daquela secretaria.",
+        "Deve ser possível filtrar os relatórios por status do documento: 'Pendente', 'Em Análise', 'Empenhado', 'Pago', 'Arquivado', 'Recusado', etc.",
+        "Opção para exportar relatórios em formato CSV ou PDF."
+      ]
+    },
+    {
+      "featureName": "Hierarquia de Usuários e Controle de Acesso",
+      "description": "Sistema de permissões para garantir que cada usuário só acesse as informações pertinentes à sua função.",
+      "requirements": [
+        {
+          "role": "Visualizador (por Secretaria)",
+          "permissions": [
+            "Apenas visualizar documentos pertencentes à sua secretaria.",
+            "Acompanhar o status e o log de atividades em tempo real.",
+            "Não pode editar, enviar, ou realizar qualquer outra ação."
+          ]
+        },
+        {
+          "role": "Finanças (Alimentador)",
+          "permissions": [
+            "Acessar e preencher o formulário de envio de novas notas/memorandos.",
+            "Selecionar a secretaria de origem do documento que está sendo enviado.",
+            "Enviar o documento para o primeiro departamento do fluxo (ex: Contabilidade)."
+          ]
+        },
+        {
+          "role": "Contabilidade",
+          "permissions": [
+            "Visualizar e acessar todos os documentos que foram enviados para a Contabilidade.",
+            "Realizar o processo de empenho.",
+            "Enviar os documentos para o departamento de Pagamento ou de volta para o requisitante com observações."
+          ]
+        },
+        {
+          "role": "Pagador",
+          "permissions": [
+            "Acessar todos os documentos que foram processados e enviados pela Contabilidade para pagamento.",
+            "Marcar um documento como 'Pago'.",
+            "Enviar o documento de volta para a Contabilidade para baixa do empenho."
+          ]
+        },
+        {
+          "role": "Arquivo",
+          "permissions": [
+            "Acessar todos os documentos cujo fluxo foi finalizado (pago e baixado).",
+            "Marcar o documento como 'Armazenado' e, se necessário, adicionar informações de localização física/digital.",
+            "Finalizar o ciclo de vida do documento no sistema."
+          ]
+        }
+      ]
+    }
+  ],
+  "workflowLogic": {
+    "summary": "Descrição passo a passo do ciclo de vida de um documento no sistema.",
+    "steps": [
+      "1. Usuário de 'Finanças' cria um novo registro via formulário e o envia para a 'Contabilidade'.",
+      "2. O documento aparece na dashboard da 'Contabilidade'. Um usuário da contabilidade aceita o item, realiza o empenho e o envia para 'Pagamento'. O status muda.",
+      "3. O documento aparece na dashboard do 'Pagador'. Um usuário realiza o pagamento e o envia de volta para a 'Contabilidade'. O status muda para 'Pago'.",
+      "4. O documento retorna para a 'Contabilidade' para dar baixa no empenho e, em seguida, é enviado para o 'Arquivo'.",
+      "5. O documento aparece na dashboard do 'Arquivo'. Um usuário o processa e marca como 'Armazenado'. O status final é 'Finalizado'.",
+      "6. Durante todo o processo, o usuário 'Visualizador' da secretaria de origem do documento pode consultar o status e a localização atual do documento."
+    ]
+  }
+}
